@@ -30,7 +30,7 @@ class IMU_Node(Node):
         
         
         # Publishers
-        self.imu_pub = self.create_publisher(Imu, "/imu/data", 10)
+        self.imu_pub = self.create_publisher(Imu, "/imu/data", 1)
         self.timer = self.create_timer(0.03, self.publish_status)
 
 
@@ -44,7 +44,7 @@ class IMU_Node(Node):
 
         msg.header = Header()
         msg.header.stamp = self.get_clock().now().to_msg()
-        msg.header.frame_id = "IMU"
+        msg.header.frame_id = "base_link"
 
         msg.orientation.x = 0.0
         msg.orientation.y = 0.0
