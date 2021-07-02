@@ -9,8 +9,9 @@ from std_msgs.msg import Header
 from sensor_msgs.msg import Imu
 
 import os
-
-sys.path.append("/home/roxy/ros2_ws/src/ROS2-HAL-Xsens-MTi-28A/hal_xsens_mti_28a")
+ros2_home = os.getenv('ROS2_HOME', "/home/roxy/ros2_ws")
+print(os.path.join(ros2_home, "src/hal_xsens_mti_28a/hal_xsens_mti_28a"))
+sys.path.append(os.path.join(ros2_home, "src/hal_xsens_mti_28a/hal_xsens_mti_28a"))
 import xsens_MTi28A
 
 # Class definition fo the estimator
@@ -29,7 +30,7 @@ class IMU_Node(Node):
         
         
         # Publishers
-        self.imu_pub = self.create_publisher(Imu, "/imu/status", 10)
+        self.imu_pub = self.create_publisher(Imu, "/imu/data", 10)
         self.timer = self.create_timer(0.03, self.publish_status)
 
 
@@ -54,10 +55,18 @@ class IMU_Node(Node):
         msg.angular_velocity.y = float(self.rotvel[1])
         msg.angular_velocity.z = float(self.rotvel[2])
 
+
+        msg.angular_velocity_covariance[0] = 0.0004
+        msg.angular_velocity_covariance[4] = 0.0004
+        msg.angular_velocity_covariance[8] = 0.0004
+
         msg.linear_acceleration.x = float(self.linacc[0])
         msg.linear_acceleration.y = float(self.linacc[1])
         msg.linear_acceleration.z = float(self.linacc[2])
 
+        msg.linear_acceleration_covariance[0] = 0.0004
+        msg.linear_acceleration_covariance[4] = 0.0004
+        msg.linear_acceleration_covariance[8] = 0.0004
 
         self.imu_pub.publish(msg)
 
