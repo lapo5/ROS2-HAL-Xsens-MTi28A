@@ -10,8 +10,6 @@ from sensor_msgs.msg import Imu, MagneticField
 
 import os
 
-#sys.path.append("/home/roxy/ros2_ws/src/ROS2-HAL-Xsens-MTi-28A/hal_xsens_mti_28a")
-#sys.path.append("/home/marco/pasqua_ros2_devel/src/ROS2-HAL-Xsens-MTi28A/hal_xsens_mti_28a")
 from resources import xsens_MTi28A
 
 # Class definition fo the estimator
@@ -31,8 +29,9 @@ class IMU_Node(Node):
         
         
         # Publishers
-        self.imu_pub = self.create_publisher(Imu, "/imu/status", 10)
+        self.imu_pub = self.create_publisher(Imu, "/imu/data", 10)
         self.mag_pub = self.create_publisher(MagneticField, "/imu/magnetic", 10)
+
         self.timer = self.create_timer(0.03, self.publish_status)
 
 
@@ -46,7 +45,8 @@ class IMU_Node(Node):
 
         msg.header = Header()
         msg.header.stamp = self.get_clock().now().to_msg()
-        msg.header.frame_id = "imu_link"
+
+        msg.header.frame_id = "base_link"
 
         msg.orientation.x = 0.0
         msg.orientation.y = 0.0
