@@ -1,3 +1,5 @@
+import os
+from glob import glob
 from setuptools import setup
 
 package_name = 'hal_xsens_mti_28a'
@@ -10,6 +12,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('lib', package_name, 'resources'), glob('hal_xsens_mti_28a/*.so')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
