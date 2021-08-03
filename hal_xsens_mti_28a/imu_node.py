@@ -46,7 +46,7 @@ class IMU_Node(Node):
         msg.header = Header()
         msg.header.stamp = self.get_clock().now().to_msg()
 
-        msg.header.frame_id = "base_link"
+        msg.header.frame_id = "imu_link"
 
         msg.orientation.x = 0.0
         msg.orientation.y = 0.0
