@@ -4,13 +4,18 @@
   <name>hal_xsens_mti_28a</name>
   <version>0.0.0</version>
   <description>HAL for IMU Xsens MTI28A</description>
+  
   <maintainer email="marco.lapolla5@gmail.com">Marco Lapolla</maintainer>
+  <maintainer email="roncapat@gmail.com">Patrick Roncagliolo</maintainer>
+  
   <license>BSD</license>
 
-  <depend>rclpy</depend>
-  <depend>sensor_msgs</depend>
+  <buildtool_depend>ament</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+  <exec_depend>rclpy</exec_depend>
 
   <export>
-    <build_type>ament_python</build_type>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>

@@ -1134,6 +1134,8 @@ CmtAnalogInData Packet::getAnalogIn1(const uint16_t index) const
 	CmtAnalogInData buffer;
 	if (containsAnalogIn1(index))
 		buffer.m_data = m_msg.getDataShort(m_infoList[index].m_analogIn1);
+	else
+		buffer.m_data = 0;
 
 	return buffer;
 }
@@ -1168,6 +1170,8 @@ CmtAnalogInData Packet::getAnalogIn2(const uint16_t index) const
 	CmtAnalogInData buffer;
 	if (containsAnalogIn2(index))
 		buffer.m_data = m_msg.getDataShort(m_infoList[index].m_analogIn2);
+	else 
+		buffer.m_data = 0;
 
 	return buffer;
 }

@@ -590,7 +590,7 @@ void Message::setDataFPValue(const uint64_t outputSettings, const double data, c
 	switch (outputSettings & CMT_OUTPUTSETTINGS_DATAFORMAT_MASK)
 	{
 		case CMT_OUTPUTSETTINGS_DATAFORMAT_FLOAT:
-			return setDataFloat((const float)data, offset);
+			return setDataFloat((float)data, offset);
 
 		case CMT_OUTPUTSETTINGS_DATAFORMAT_DOUBLE:
 			return setDataDouble(data, offset);

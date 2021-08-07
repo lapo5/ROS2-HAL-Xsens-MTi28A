@@ -1240,10 +1240,10 @@ typedef uint64_t CmtTimeStamp;
 #define CMT_AUTO_SAVE_FRAMES	5000
 #define CMT_FILE_LAST_FRAME		0xFFFFFFFF
 
-#define CMT_BID_BROADCAST		(const uint8_t)0x00
-#define CMT_BID_INVALID			(const uint8_t)0xFE
-#define CMT_MID_REQEMTS			(const uint8_t)0x90
-#define CMT_MID_EMTSDATA		(const uint8_t)0x91
+#define CMT_BID_BROADCAST		0x00
+#define CMT_BID_INVALID			0xFE
+#define CMT_MID_REQEMTS			0x90
+#define CMT_MID_EMTSDATA		0x91
 #define CMT_EMTS_SIZE			1320
 
 #define CMT_STATUSFLAG_SELFTEST						0x01
