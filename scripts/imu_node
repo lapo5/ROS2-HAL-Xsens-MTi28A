@@ -23,15 +23,20 @@ class IMU_Node(Node):
         if not self.imu.init(xsens_MTi28A.Mode.CalibratedData, "/dev/ttyUSB0"):
             sys.exit(1)
         
+        self.publish_magnetic = False
 
         self.rotvel = np.array([0, 0, 0], dtype=np.float32)
         self.linacc = np.array([0, 0, 0], dtype=np.float32)
         self.magfld = np.array([0, 0, 0], dtype=np.float32)
         
+        # Robot Specific: Orientation between imu frame and the expected frame 
+        self.rotation_matrix = np.matrix([[1, 0, 0], [0, 1, 0],  [0, 0, 1]], dtype=np.float32)
         
         # Publishers
         self.imu_pub = self.create_publisher(Imu, "/imu/data", 10)
-        self.mag_pub = self.create_publisher(MagneticField, "/imu/magnetic", 10)
+
+        if self.publish_magnetic:
+            self.mag_pub = self.create_publisher(MagneticField, "/imu/magnetic", 10)
 
         self.timer = self.create_timer(0.03, self.publish_status)
 
@@ -40,7 +45,12 @@ class IMU_Node(Node):
     # Publisher function
     def publish_status(self):
 
-        self.imu.get_gyro_acc_mag(self.rotvel, self.linacc, self.magfld)
+        self.imu.get_gyro_acc(self.rotvel, self.linacc)
+
+        self.rotvel = np.matmul(self.rotation_matrix, self.rotvel)
+        self.rotvel = np.array(self.rotvel).flatten()
+        self.linacc = np.matmul(self.rotation_matrix, self.linacc)
+        self.linacc = np.array(self.linacc).flatten()
         
         msg = Imu()
 
@@ -54,9 +64,9 @@ class IMU_Node(Node):
         msg.orientation.z = 0.0
         msg.orientation.w = 0.0
 
-        msg.orientation_covariance[0] = 0.01745
-        msg.orientation_covariance[4] = 0.01745
-        msg.orientation_covariance[8] = 0.15708
+        msg.orientation_covariance[0] = 1e3
+        msg.orientation_covariance[4] = 1e3
+        msg.orientation_covariance[8] = 1e3
 
         msg.angular_velocity.x = float(self.rotvel[0])
         msg.angular_velocity.y = float(self.rotvel[1])
@@ -76,23 +86,23 @@ class IMU_Node(Node):
 
         self.imu_pub.publish(msg)
 
-        '''
-        mag_msg = MagneticField()
+        if self.publish_magnetic:
+            mag_msg = MagneticField()
 
-        mag_msg.header = Header()
-        mag_msg.header.stamp = self.get_clock().now().to_msg()
-        mag_msg.header.frame_id = "imu_mag_link"
+            mag_msg.header = Header()
+            mag_msg.header.stamp = self.get_clock().now().to_msg()
+            mag_msg.header.frame_id = "imu_mag_link"
 
-        mag_msg.magnetic_field.x = float(self.magfld[0])
-        mag_msg.magnetic_field.y = float(self.magfld[1])
-        mag_msg.magnetic_field.z = float(self.magfld[2])
+            mag_msg.magnetic_field.x = float(self.magfld[0])
+            mag_msg.magnetic_field.y = float(self.magfld[1])
+            mag_msg.magnetic_field.z = float(self.magfld[2])
 
-        mag_msg.magnetic_field_covariance[0] = 0.1
-        mag_msg.magnetic_field_covariance[4] = 0.1
-        mag_msg.magnetic_field_covariance[8] = 0.1
+            mag_msg.magnetic_field_covariance[0] = 0.1
+            mag_msg.magnetic_field_covariance[4] = 0.1
+            mag_msg.magnetic_field_covariance[8] = 0.1
 
-        self.mag_pub.publish(mag_msg)
-        '''
+            self.mag_pub.publish(mag_msg)
+        
 
 
 # Main loop function
