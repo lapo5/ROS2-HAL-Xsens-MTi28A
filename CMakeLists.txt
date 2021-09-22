@@ -61,8 +61,8 @@ target_link_libraries(xsens_MTi28A cmt)
 # Install the python module for this package
 ament_python_install_package(${PROJECT_NAME})
 
-# Install python scripts
-install(PROGRAMS scripts/imu_node DESTINATION lib/${PROJECT_NAME})
+# Install python hal_xsens_mti_28a
+install(PROGRAMS hal_xsens_mti_28a/imu_node DESTINATION lib/${PROJECT_NAME})
 
 install(
   DIRECTORY include/libcmt
