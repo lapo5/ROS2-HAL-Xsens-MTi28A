@@ -20,10 +20,16 @@ class IMU_Node(Node):
 
         self.imu = xsens_MTi28A.HAL()
 
-        if not self.imu.init(xsens_MTi28A.Mode.CalibratedData, "/dev/ttyUSB0"):
+        self.declare_parameter("port", "/dev/ttyUSB0")
+        self.port = self.get_parameter("port").value
+
+        if not self.imu.init(xsens_MTi28A.Mode.CalibratedData, self.port):
+
+            self.get_logger().info("No XSens MTi28A connected on port: {0}".format(self.port))
             sys.exit(1)
-        
-        self.publish_magnetic = False
+
+        self.declare_parameter("publish_magnetic", "False")        
+        self.publish_magnetic = (self.get_parameter("publish_magnetic").value == "True")
 
         self.rotvel = np.array([0, 0, 0], dtype=np.float32)
         self.linacc = np.array([0, 0, 0], dtype=np.float32)
@@ -32,15 +38,27 @@ class IMU_Node(Node):
         # Robot Specific: Orientation between imu frame and the expected frame 
         self.rotation_matrix = np.matrix([[1, 0, 0], [0, 1, 0],  [0, 0, 1]], dtype=np.float32)
         
+        self.declare_parameter("publishers.imu_data", "/imu/data")
+        self.publisher_topic = self.get_parameter("publishers.imu_data").value
+
+        self.declare_parameter("publishers.magnetic_data", "/imu/magnetic")
+        self.mag_publisher_topic = self.get_parameter("publishers.magnetic_data").value
         # Publishers
-        self.imu_pub = self.create_publisher(Imu, "/imu/data", 10)
+        self.imu_pub = self.create_publisher(Imu, self.publisher_topic, 1)
 
         if self.publish_magnetic:
-            self.mag_pub = self.create_publisher(MagneticField, "/imu/magnetic", 10)
+            self.mag_pub = self.create_publisher(MagneticField, self.mag_publisher_topic, 1)
 
-        self.timer = self.create_timer(0.03, self.publish_status)
+        self.declare_parameter("hz", "30.0")
+        self.rate = float(self.get_parameter("hz").value)
 
+        self.declare_parameter("frames.imu_link", "imu_link")
+        self.imu_link_frame = self.get_parameter("frames.imu_link").value
 
+        self.declare_parameter("frames.magnetic_imu_link", self.imu_link_frame)
+        self.magnetic_imu_link_frame = self.get_parameter("frames.magnetic_imu_link").value
+
+        self.timer = self.create_timer(1.0/self.rate, self.publish_status)
 
     # Publisher function
     def publish_status(self):
@@ -57,7 +75,7 @@ class IMU_Node(Node):
         msg.header = Header()
         msg.header.stamp = self.get_clock().now().to_msg()
 
-        msg.header.frame_id = "imu_link"
+        msg.header.frame_id = self.imu_link_frame
 
         msg.orientation.x = 0.0
         msg.orientation.y = 0.0
@@ -91,7 +109,7 @@ class IMU_Node(Node):
 
             mag_msg.header = Header()
             mag_msg.header.stamp = self.get_clock().now().to_msg()
-            mag_msg.header.frame_id = "imu_mag_link"
+            mag_msg.header.frame_id = self.magnetic_imu_link_frame
 
             mag_msg.magnetic_field.x = float(self.magfld[0])
             mag_msg.magnetic_field.y = float(self.magfld[1])
@@ -120,7 +138,6 @@ def main(args=None):
     finally:
         # Destroy the node explicitly
         # (optional - Done automatically when node is garbage collected)
-        node.destroy_node()
         rclpy.shutdown()
 
 # Main

@@ -10,10 +10,9 @@
   
   <license>BSD</license>
 
-  <buildtool_depend>ament</buildtool_depend>
-  <buildtool_depend>ament_cmake_python</buildtool_depend>
-
-  <exec_depend>rclpy</exec_depend>
+  <depend>ament</depend>
+  <depend>ament_cmake_python</depend>
+  <depend>rclpy</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

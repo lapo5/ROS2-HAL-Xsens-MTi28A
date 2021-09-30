@@ -82,6 +82,20 @@ install(
   LIBRARY DESTINATION ${PYTHON_INSTALL_DIR}/${PROJECT_NAME}
 )
 
+
+# Install launch files.
+install(DIRECTORY
+  params
+  DESTINATION share/${PROJECT_NAME}/
+)
+
+# Install launch files.
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
+
 # Export package dependencies
 ament_export_dependencies(ament_cmake)
 ament_export_dependencies(ament_cmake_python)
