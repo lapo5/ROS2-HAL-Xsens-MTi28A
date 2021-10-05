@@ -1,7 +1,6 @@
 xsens_imu_node:
   ros__parameters:
     port: /dev/ttyUSB0
-    hz: 30.0
     publish_magnetic: False
     
     publishers:

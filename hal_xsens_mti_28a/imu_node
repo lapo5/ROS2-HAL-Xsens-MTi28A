@@ -49,9 +49,6 @@ class IMU_Node(Node):
         if self.publish_magnetic:
             self.mag_pub = self.create_publisher(MagneticField, self.mag_publisher_topic, 1)
 
-        self.declare_parameter("hz", "30.0")
-        self.rate = float(self.get_parameter("hz").value)
-
         self.declare_parameter("frames.imu_link", "imu_link")
         self.imu_link_frame = self.get_parameter("frames.imu_link").value
 
