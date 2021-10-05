@@ -61,6 +61,10 @@ class IMU_Node(Node):
         self.thread = Thread(target=IMU_Node.publish_status, args=[self])
         self.thread.start()
 
+    def cleanup(self):
+        self.stop = True
+        self.thread.join()
+
     def publish_status(self):
         msg = Imu()
 
@@ -137,6 +141,7 @@ def main(args=None):
         raise
     finally:
         # Destroy the node explicitly
+        node.cleanup()
         # (optional - Done automatically when node is garbage collected)
         rclpy.shutdown()
 
