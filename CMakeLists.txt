@@ -18,7 +18,7 @@ add_library(cmt STATIC
     src/libcmt/cmtscan.cpp  
     src/libcmt/xsens_std.cpp  
     src/libcmt/xsens_time.cpp)
-target_compile_options(cmt PUBLIC -Wall -Wextra -Wno-attributes -Wno-attribute-warning)
+target_compile_options(cmt PUBLIC -O3 -mtune=native -march=native -DNDEBUG -Wall -Wextra -Wno-attributes -Wno-attribute-warning)
 target_include_directories(cmt PUBLIC include/libcmt)
 target_link_libraries(cmt -lrt)
 
@@ -47,7 +47,7 @@ string(REPLACE " " ";" PYBIND11_INCLUDES_LIST ${PYBIND11_INCLUDES_LIST})
 add_library(xsens_MTi28A SHARED src/xsens_MTi28A.cpp)
 set_target_properties(xsens_MTi28A PROPERTIES PREFIX "")  
 set_target_properties(xsens_MTi28A PROPERTIES SUFFIX ${PYBIND11_SUFFIX})
-target_compile_options(cmt PUBLIC -O3 -mtune=native -march=native -DNDEBUG -Wall -Wextra -Wno-attributes)
+target_compile_options(xsens_MTi28A PUBLIC -O3 -mtune=native -march=native -DNDEBUG -Wall -Wextra -Wno-attributes)
 target_include_directories(cmt PUBLIC include "$<BUILD_INTERFACE:${PYBIND11_INCLUDES_LIST}>")
 target_link_libraries(xsens_MTi28A cmt)
 
