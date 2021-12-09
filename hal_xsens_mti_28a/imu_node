@@ -57,10 +57,13 @@ class IMU_Node(Node):
 
         self.thread = Thread(target=IMU_Node.publish_status, args=[self])
         self.thread.start()
+        self.get_logger().info('[Xsens MTi28A IMU] Node Ready')
+
 
     def cleanup(self):
         self.stop = True
         self.thread.join()
+
 
     def publish_status(self):
         msg = Imu()
@@ -132,9 +135,9 @@ def main(args=None):
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
-        print('Xsens IMU Node stopped cleanly')
+        node.get_logger().info('[Xsens MTi28A IMU] Node Stopped Cleanly')
     except BaseException:
-        print('Exception in Xsens IMU Node:', file=sys.stderr)
+        node.get_logger().info('[Xsens MTi28A IMU] Exception:', file=sys.stderr)
         raise
     finally:
         # Destroy the node explicitly
