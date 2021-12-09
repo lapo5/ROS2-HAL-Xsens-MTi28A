@@ -1,4 +1,4 @@
-# ZED CAMERA
+# HAL for Xsens MTi28A IMU
 
 HAL for Xsens MTi28A IMU.
 
